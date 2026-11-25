@@ -5,6 +5,10 @@ const KEY = 'taskManager.tasks.v1';
 
 let tasks = JSON.parse(localStorage.getItem(KEY) || '[]');
 let editingId = null;
+const INBOX_KEY = 'taskManager.inbox.v1';
+let inbox = JSON.parse(localStorage.getItem(INBOX_KEY) || '[]');
+let triagingId = null;
+const saveInbox = () => localStorage.setItem(INBOX_KEY, JSON.stringify(inbox));
 
 const $ = (s) => document.querySelector(s);
 const save = () => localStorage.setItem(KEY, JSON.stringify(tasks));
@@ -95,8 +99,9 @@ function render() {
   });
 }
 
-function openForm(t) {
+function openForm(t, inboxItem) {
   editingId = t ? t.id : null;
+  triagingId = inboxItem ? inboxItem.id : null;
   const f = $('#form');
   f.reset();
   $('#formTitle').textContent = t ? `Edit task #${t.id}` : 'New task';
@@ -107,6 +112,7 @@ function openForm(t) {
     f.dependencies.value = t.dependencies.join('\n'); f.notes.value = t.notes;
   } else {
     f.priority.value = 'Medium'; f.status.value = 'To Do';
+    if (inboxItem) f.title.value = inboxItem.text;
   }
   $('#formDlg').showModal();
 }
@@ -123,7 +129,31 @@ $('#form').addEventListener('submit', (e) => {
   if (!data.title || !data.criteria.length) { e.preventDefault(); return; }
   if (editingId) Object.assign(tasks.find((t) => t.id === editingId), data);
   else tasks.push({ id: Math.max(0, ...tasks.map((t) => t.id)) + 1, ...data });
-  save(); render();
+  if (triagingId) { inbox = inbox.filter((i) => i.id !== triagingId); saveInbox(); triagingId = null; }
+  save(); render(); renderInbox();
+});
+
+function renderInbox() {
+  $('#inboxCount').textContent = inbox.length;
+  const ul = $('#inboxList');
+  ul.replaceChildren();
+  inbox.forEach((i) => {
+    const li = el('li');
+    const triage = el('button', 'Triage');
+    triage.onclick = () => openForm(null, i);
+    const del = el('button', 'Discard');
+    del.onclick = () => { inbox = inbox.filter((x) => x !== i); saveInbox(); renderInbox(); };
+    li.append(el('span', i.text), triage, del);
+    ul.append(li);
+  });
+}
+
+$('#inboxForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const text = $('#inboxInput').value.trim();
+  if (!text) return;
+  inbox.push({ id: Math.max(0, ...inbox.map((i) => i.id)) + 1, text });
+  saveInbox(); $('#inboxInput').value = ''; renderInbox();
 });
 
 function report() {
@@ -146,9 +176,11 @@ function report() {
 
 $('#newBtn').onclick = () => openForm();
 $('#cancelBtn').onclick = () => $('#formDlg').close();
+$('#formDlg').addEventListener('close', () => { triagingId = null; });
 $('#reportBtn').onclick = () => { $('#reportText').textContent = report(); $('#reportDlg').showModal(); };
 $('#closeReport').onclick = () => $('#reportDlg').close();
 $('#copyBtn').onclick = () => navigator.clipboard.writeText($('#reportText').textContent);
 ['#search', '#fStatus', '#fPriority', '#fCategory'].forEach((s) => $(s).addEventListener('input', render));
 
 render();
+renderInbox();

@@ -29,3 +29,9 @@ form{display:flex;flex-direction:column;gap:10px}
 label{display:flex;flex-direction:column;gap:2px;font-size:13px;font-weight:600;flex:1}
 .row{display:flex;gap:10px}.row.end{justify-content:flex-end}
 pre{white-space:pre-wrap;background:#f4f5f7;padding:12px;border-radius:6px;max-height:60vh;overflow:auto}
+.inbox{margin:12px 24px;padding:12px;background:#fff;border:1px solid #dde1e8;border-radius:8px}
+.inbox h2{margin:0 0 8px;font-size:16px}
+.inbox-add{flex-direction:row}
+.inbox ul{list-style:none;margin:8px 0 0;padding:0}
+.inbox li{display:flex;gap:8px;align-items:center;padding:6px 0;border-top:1px solid #eef0f4}
+.inbox li span{flex:1}

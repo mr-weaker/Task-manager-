@@ -15,6 +15,15 @@
   </div>
 </header>
 
+<section class="inbox" aria-label="Inbox">
+  <h2>Inbox <span id="inboxCount" class="badge">0</span></h2>
+  <form id="inboxForm" class="inbox-add">
+    <input id="inboxInput" placeholder="Capture something quickly…" maxlength="200" aria-label="Capture to inbox" required>
+    <button class="primary">Add</button>
+  </form>
+  <ul id="inboxList"></ul>
+</section>
+
 <section class="filters" aria-label="Filters">
   <input id="search" type="search" placeholder="Search tasks…" aria-label="Search">
   <select id="fStatus" aria-label="Filter by status"></select>
