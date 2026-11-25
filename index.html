@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Task Manager</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <h1>Task Manager</h1>
+  <div class="actions">
+    <button id="newBtn" class="primary">+ New task</button>
+    <button id="reportBtn">Status report</button>
+  </div>
+</header>
+
+<section class="inbox" aria-label="Inbox">
+  <h2>Inbox <span id="inboxCount" class="badge">0</span></h2>
+  <form id="inboxForm" class="inbox-add">
+    <input id="inboxInput" placeholder="Capture something quickly…" maxlength="200" aria-label="Capture to inbox" required>
+    <button class="primary">Add</button>
+  </form>
+  <ul id="inboxList"></ul>
+</section>
+
+<section class="filters" aria-label="Filters">
+  <input id="search" type="search" placeholder="Search tasks…" aria-label="Search">
+  <select id="fStatus" aria-label="Filter by status"></select>
+  <select id="fPriority" aria-label="Filter by priority"></select>
+  <select id="fCategory" aria-label="Filter by category"></select>
+</section>
+
+<main id="board"></main>
+
+<dialog id="formDlg">
+  <form id="form" method="dialog">
+    <h2 id="formTitle">New task</h2>
+    <label>Title* <input name="title" required maxlength="120"></label>
+    <div class="row">
+      <label>Category <select name="category"></select></label>
+      <label>Priority <select name="priority"></select></label>
+      <label>Status <select name="status"></select></label>
+    </div>
+    <div class="row">
+      <label>Assignee <input name="assignee"></label>
+      <label>Estimate (hours) <input name="estimate" type="number" min="0" step="0.5"></label>
+    </div>
+    <label>Description <textarea name="description" rows="3"></textarea></label>
+    <label>Acceptance criteria* (one per line) <textarea name="criteria" rows="3" required></textarea></label>
+    <label>Dependencies (one per line; use a task title or #id) <textarea name="dependencies" rows="2"></textarea></label>
+    <label>Notes <textarea name="notes" rows="2"></textarea></label>
+    <div class="row end">
+      <button type="button" id="cancelBtn">Cancel</button>
+      <button type="submit" class="primary">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="reportDlg">
+  <h2>Status report</h2>
+  <pre id="reportText"></pre>
+  <div class="row end">
+    <button id="copyBtn">Copy</button>
+    <button id="closeReport">Close</button>
+  </div>
+</dialog>
+
+<script src="app.js"></script>
+</body>
+</html>
