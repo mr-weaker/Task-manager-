@@ -35,3 +35,4 @@ pre{white-space:pre-wrap;background:#f4f5f7;padding:12px;border-radius:6px;max-h
 .inbox ul{list-style:none;margin:8px 0 0;padding:0}
 .inbox li{display:flex;gap:8px;align-items:center;padding:6px 0;border-top:1px solid #eef0f4}
 .inbox li span{flex:1}
+.badge.unread{background:#2457d6;color:#fff;flex:none}.inbox li span{cursor:pointer}

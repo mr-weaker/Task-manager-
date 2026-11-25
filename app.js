@@ -134,7 +134,7 @@ $('#form').addEventListener('submit', (e) => {
 });
 
 function renderInbox() {
-  $('#inboxCount').textContent = inbox.length;
+  $('#inboxCount').textContent = inbox.filter((i) => !i.read).length;
   const ul = $('#inboxList');
   ul.replaceChildren();
   inbox.forEach((i) => {
@@ -143,7 +143,17 @@ function renderInbox() {
     triage.onclick = () => openForm(null, i);
     const del = el('button', 'Discard');
     del.onclick = () => { inbox = inbox.filter((x) => x !== i); saveInbox(); renderInbox(); };
-    li.append(el('span', i.text), triage, del);
+    const text = el('span', i.text);
+    text.tabIndex = 0;
+    text.onclick = () => {
+      // INTENTIONAL BUG: item is marked read and saved, but the inbox is not
+      // re-rendered, so the "Unread" badge and the unread count stay stale.
+      i.read = true;
+      saveInbox();
+    };
+    li.append(text);
+    if (!i.read) li.append(el('span', 'Unread', 'badge unread'));
+    li.append(triage, del);
     ul.append(li);
   });
 }
@@ -152,7 +162,7 @@ $('#inboxForm').addEventListener('submit', (e) => {
   e.preventDefault();
   const text = $('#inboxInput').value.trim();
   if (!text) return;
-  inbox.push({ id: Math.max(0, ...inbox.map((i) => i.id)) + 1, text });
+  inbox.push({ id: Math.max(0, ...inbox.map((i) => i.id)) + 1, text, read: false });
   saveInbox(); $('#inboxInput').value = ''; renderInbox();
 });
 
