@@ -15,6 +15,9 @@ function load(items) {
   const { window } = dom;
   window.HTMLDialogElement.prototype.showModal = function () { this.open = true; };
   window.HTMLDialogElement.prototype.close = function () { this.open = false; };
+  // jsdom lacks browsers' named access to form controls (form.priority).
+  const form = window.document.querySelector('#form');
+  form.querySelectorAll('[name]').forEach((c) => Object.defineProperty(form, c.name, { value: c }));
   window.localStorage.setItem(INBOX_KEY, JSON.stringify(items));
   window.eval(fs.readFileSync(path.join(root, 'app.js'), 'utf8'));
   return window;
@@ -56,6 +59,7 @@ test('Triage marks the item read', () => {
   assert.equal(count(w), '1');
   assert.equal(badges(w), 1);
   assert.equal(w.document.querySelector('#formDlg').open, true);
+  assert.equal(w.document.querySelector('#form').title.value, 'first');
 });
 
 test('clicking an already-read item changes nothing', () => {
