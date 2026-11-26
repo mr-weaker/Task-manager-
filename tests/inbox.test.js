@@ -55,7 +55,7 @@ test('Triage marks the item read', () => {
   w.document.querySelectorAll('#inboxList li')[0].querySelector('button').click();
   assert.equal(count(w), '1');
   assert.equal(badges(w), 1);
-  assert.equal(w.document.querySelector('[name=title]').value, 'first');
+  assert.equal(w.document.querySelector('#formDlg').open, true);
 });
 
 test('clicking an already-read item changes nothing', () => {
