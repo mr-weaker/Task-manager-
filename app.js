@@ -133,6 +133,13 @@ $('#form').addEventListener('submit', (e) => {
   save(); render(); renderInbox();
 });
 
+function markRead(item) {
+  if (item.read) return;
+  item.read = true;
+  saveInbox();
+  renderInbox();
+}
+
 function renderInbox() {
   $('#inboxCount').textContent = inbox.filter((i) => !i.read).length;
   const ul = $('#inboxList');
@@ -140,16 +147,16 @@ function renderInbox() {
   inbox.forEach((i) => {
     const li = el('li');
     const triage = el('button', 'Triage');
-    triage.onclick = () => openForm(null, i);
+    triage.onclick = () => { markRead(i); openForm(null, i); };
     const del = el('button', 'Discard');
     del.onclick = () => { inbox = inbox.filter((x) => x !== i); saveInbox(); renderInbox(); };
     const text = el('span', i.text);
     text.tabIndex = 0;
-    text.onclick = () => {
-      // INTENTIONAL BUG: item is marked read and saved, but the inbox is not
-      // re-rendered, so the "Unread" badge and the unread count stay stale.
-      i.read = true;
-      saveInbox();
+    text.onclick = () => markRead(i);
+    text.onkeydown = (e) => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      e.preventDefault();
+      markRead(i);
     };
     li.append(text);
     if (!i.read) li.append(el('span', 'Unread', 'badge unread'));
