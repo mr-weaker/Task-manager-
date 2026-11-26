@@ -146,10 +146,10 @@ function renderInbox() {
     const text = el('span', i.text);
     text.tabIndex = 0;
     text.onclick = () => {
-      // INTENTIONAL BUG: item is marked read and saved, but the inbox is not
-      // re-rendered, so the "Unread" badge and the unread count stay stale.
+      if (i.read) return;
       i.read = true;
       saveInbox();
+      renderInbox();
     };
     li.append(text);
     if (!i.read) li.append(el('span', 'Unread', 'badge unread'));
